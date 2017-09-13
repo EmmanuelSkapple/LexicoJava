@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  * @author emmanuelgarcia
  */
 public class form extends javax.swing.JFrame {
-
+String filename;
     /**
      * Creates new form form
      */
@@ -121,13 +121,13 @@ public class form extends javax.swing.JFrame {
         chooser.showOpenDialog(null);
         File f = chooser.getSelectedFile();
         String filename = f.getAbsolutePath();
-        
         try{
             FileReader reader = new FileReader(filename);
             BufferedReader br = new BufferedReader(reader);
             jTextArea1.read(br,null);
             br.close();
             jTextArea1.requestFocus();
+        new Lexic(filename);
 
         }
         catch(Exception e){
@@ -142,9 +142,8 @@ public class form extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        ArrayList<Token> tokens = lex(jTextArea1.getText());
-        for (Token token : tokens)
-             System.out.println(token);
+        
+        
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -153,119 +152,14 @@ public class form extends javax.swing.JFrame {
      */
     
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(form.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(form.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(form.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(form.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new form().setVisible(true);
             }
         });
     }
-    
-        public static enum TipoToken{
-    
 
-            NUMERO("-?[0-9]+"),
-        ARITMETICO("[*|/|+|-|=]"),
-        ESPACIOS("[ \t\f\r\n]+"),
-        APERTURA("[(|{]"),
-        RESERVADA("-?[if|else|for|while|do|static|void|null|extends|new|public|final|private|this|try|catch|]+"),
-        TIPODATO("-?[int|bool|String|char|enum|array|float]+"),
-        CERRADURA("[)|}]"),
-        FINSENTENCIA("[;]"),
-        IDENTIFICADOR("-?[a-z|A-Z]+");
-                
-        public final String padre;
-        private TipoToken(String padre){
-        this.padre=padre;
-        }
-    }
-    
-    
-    public static class Token {
-    public TipoToken type;
-    public String data;
-
-    public Token(TipoToken type, String data) {
-      this.type = type;
-      this.data = data;
-    }
-
-    @Override
-    public String toString() {
-      return String.format("(%s %s)", type.name(), data);
-    }
-  }
-     public static ArrayList<Token> lex(String input) {
-    ArrayList<Token> tokens = new ArrayList<Token>();
-
-  // Lexer logic begins here
-  StringBuffer tokenPatternsBuffer = new StringBuffer();
-  for (TipoToken tipoToken : TipoToken.values())
-    tokenPatternsBuffer.append(String.format("|(?<%s>%s)", tipoToken.name(), tipoToken.padre));
-  Pattern tokenPatterns = Pattern.compile(new String(tokenPatternsBuffer.substring(1)));
-  // Begin matching tokens
-  Matcher matcher = tokenPatterns.matcher(input);
-  while (matcher.find()) {
-        if (matcher.group(TipoToken.NUMERO.name()) != null) {
-          tokens.add(new Token(TipoToken.NUMERO, matcher.group(TipoToken.NUMERO.name())));
-          continue;
-             } 
-    else if (matcher.group(TipoToken.ARITMETICO.name()) != null) {
-         tokens.add(new Token(TipoToken.ARITMETICO, matcher.group(TipoToken.ARITMETICO.name())));
-            continue;
-    } 
-    else if (matcher.group(TipoToken.APERTURA.name()) != null) {
-         tokens.add(new Token(TipoToken.APERTURA, matcher.group(TipoToken.APERTURA.name())));
-            continue;
-    } 
-    else if (matcher.group(TipoToken.CERRADURA.name()) != null) {
-         tokens.add(new Token(TipoToken.CERRADURA, matcher.group(TipoToken.CERRADURA.name())));
-            continue;
-    } 
-     else if (matcher.group(TipoToken.FINSENTENCIA.name()) != null) {
-         tokens.add(new Token(TipoToken.FINSENTENCIA, matcher.group(TipoToken.FINSENTENCIA.name())));
-            continue;
-    } 
-      else if (matcher.group(TipoToken.IDENTIFICADOR.name()) != null) {
-         tokens.add(new Token(TipoToken.IDENTIFICADOR, matcher.group(TipoToken.IDENTIFICADOR.name())));
-            continue;
-    } 
-      else if (matcher.group(TipoToken.RESERVADA.name()) != null) {
-         tokens.add(new Token(TipoToken.RESERVADA, matcher.group(TipoToken.RESERVADA.name())));
-            continue;
-    } 
-      else if (matcher.group(TipoToken.TIPODATO.name()) != null) {
-         tokens.add(new Token(TipoToken.TIPODATO, matcher.group(TipoToken.TIPODATO.name())));
-            continue;
-    } 
-    else if (matcher.group(TipoToken.ESPACIOS.name()) != null)
-      continue;
-  }
-    return tokens;
-}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
