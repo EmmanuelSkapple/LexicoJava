@@ -61,7 +61,12 @@ public class Lexic {
                                 System.out.println("Palabra reservada="+ora);
                             }
                             else{//caso contrario es un identificador o variable
+                                if(tipoDato(ora)){
+                                System.out.println("TipoDeDato-->"+ora);
+                                }
+                                else{
                                 System.out.println("Identificador-->"+ora);
+                                }
                             }
                             continue;
                         }//end if si es variable
@@ -70,7 +75,14 @@ public class Lexic {
                             if(evaluarCaracter(t)){//¿es separador?
                                 System.out.println("Separador-->"+evaluarSeparador(t));
                             }else{//¿o es un operador?
+                                if(CaracterDeTermio(t)==';'){
+                                System.out.println("Caracter de termino-->"+t);
+                                }
+                                else{
+                                    if(evaluarOperador(t)!=' '){
                                 System.out.println("Operador-->"+evaluarOperador(t));
+                                    }
+                                }
                             }
                             i++;
                             continue;
@@ -123,16 +135,20 @@ public class Lexic {
         else if(c=='~')car='~';
         else if(c=='$')car='$';
         else if(c=='+')car='+';
+        else if(c=='=')car='=';
         else if(c=='-')car='-';
         else if(c=='*')car='*';
         else if(c=='/')car='/';
         else if(c=='%')car='%';
         return car;
     }
- 
-    /**
-    retornamos nuestro caracter de separador
-    */
+    public static char CaracterDeTermio(char c){
+        char car=' ';
+        if(c==';')car=';';
+        return car;
+    }
+    
+
     public static char evaluarSeparador(char c){
         char car=' ';
         if(c=='(') car='(';
@@ -147,23 +163,40 @@ public class Lexic {
         
         return car;
     }
- 
-    /**
-    buscamos si existe la palabra reservada
-    */
     public static boolean palabraReservada(String cad){
-        if(cad.equalsIgnoreCase("FUNCION")) return true;
-        else if(cad.equalsIgnoreCase("SI"))return true;
-        else if(cad.equalsIgnoreCase("ENTONCES"))return true;
-        else if(cad.equalsIgnoreCase("SINO"))return true;
-        else if(cad.equalsIgnoreCase("REPETIR"))return true;
-        else if(cad.equalsIgnoreCase("LEER")) return true;
-        else if(cad.equalsIgnoreCase("ESCRIBIR")) return true;
+        if(cad.equalsIgnoreCase("public")) return true;
+        else if(cad.equalsIgnoreCase("static"))return true;
+        else if(cad.equalsIgnoreCase("else"))return true;
+        else if(cad.equalsIgnoreCase("if"))return true;
+        else if(cad.equalsIgnoreCase("for"))return true;
+        else if(cad.equalsIgnoreCase("while")) return true;
+        else if(cad.equalsIgnoreCase("return")) return true;
+        else if(cad.equalsIgnoreCase("case"))return true;
+        else if(cad.equalsIgnoreCase("break"))return true;
+        else if(cad.equalsIgnoreCase("protected"))return true;
+        else if(cad.equalsIgnoreCase("switch")) return true;
+        else if(cad.equalsIgnoreCase("do")) return true;
+        else if(cad.equalsIgnoreCase("foreach"))return true;
+        else if(cad.equalsIgnoreCase("new"))return true;
+
         //con equalsIgnoreCase no nos importa si está en mayúsculas o minúsculas o alternadas
         else return false;
-    }
- 
-    
+    } 
+        public static boolean tipoDato(String cad){
+        if(cad.equalsIgnoreCase("int")) return true;
+        else if(cad.equalsIgnoreCase("String"))return true;
+        else if(cad.equalsIgnoreCase("boolean"))return true;
+        else if(cad.equalsIgnoreCase("enum"))return true;
+        else if(cad.equalsIgnoreCase("object"))return true;
+        else if(cad.equalsIgnoreCase("char")) return true;
+        else if(cad.equalsIgnoreCase("float")) return true;
+        else if(cad.equalsIgnoreCase("short")) return true;
+        else if(cad.equalsIgnoreCase("long")) return true;
+
+        //con equalsIgnoreCase no nos importa si está en mayúsculas o minúsculas o alternadas
+        else return false;
+    } 
+
 }
 
 
