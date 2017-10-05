@@ -16,6 +16,7 @@ import java.util.*;
  * @author emmanuelgarcia
  */
 public class Lexic {
+    String tokensCompletos="";
 
  public Lexic(String f){
         String bufferIn;
@@ -43,6 +44,7 @@ public class Lexic {
                             }
                             i=j;//movemos a nuestra variable i en la cadena
                             System.out.println("Número-->"+ora);
+                            tokensCompletos+="Numero("+ora+")|";
                             continue;//pasamos al siguiente elemento
                         }//end if si es Dígito
                         else if(Character.isLetter(t)){//comprobamos si es una letra
@@ -58,14 +60,17 @@ public class Lexic {
                             }
                             i=j;
                             if(palabraReservada(ora)){//comprobamos si es una palabra reservada
-                                System.out.println("Palabra reservada="+ora);
+                                System.out.println("Palabra_reservada="+ora);
+                                tokensCompletos+="Palabra_reservada("+ora+")|";
                             }
                             else{//caso contrario es un identificador o variable
                                 if(tipoDato(ora)){
                                 System.out.println("TipoDeDato-->"+ora);
+                                tokensCompletos+="TipoDeDato("+ora+")|";
                                 }
                                 else{
                                 System.out.println("Identificador-->"+ora);
+                                tokensCompletos+="Identificador("+ora+")|";
                                 }
                             }
                             continue;
@@ -74,13 +79,16 @@ public class Lexic {
                         //si no es letra ni dígito entonces...
                             if(evaluarCaracter(t)){//¿es separador?
                                 System.out.println("Separador-->"+evaluarSeparador(t));
+                                tokensCompletos+="Separador("+evaluarSeparador(t)+")|";
                             }else{//¿o es un operador?
                                 if(CaracterDeTermio(t)==';'){
-                                System.out.println("Caracter de termino-->"+t);
+                                System.out.println("CaracterDeTermino-->"+t);
+                                tokensCompletos+="CaracterDeTermino("+t+")|";
                                 }
                                 else{
                                     if(evaluarOperador(t)!=' '){
                                 System.out.println("Operador-->"+evaluarOperador(t));
+                                tokensCompletos+="Operador("+evaluarOperador(t)+")|";
                                     }
                                 }
                             }
@@ -89,6 +97,7 @@ public class Lexic {
                         }//end if si es diferente de letra y dígito
                     }
                 }//end while
+                System.out.println(tokensCompletos);
             }catch(IOException e){}
         }catch(FileNotFoundException e){}
     }
