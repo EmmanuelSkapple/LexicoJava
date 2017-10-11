@@ -20,6 +20,8 @@ public class Lexic {
 
  public Lexic(String f){
         String bufferIn;
+        String ruta="/home/adan/NetBeansProjects/LexicoJava/tiraTokens.txt";
+        
         try{
                          System.out.println(f);
 
@@ -61,7 +63,7 @@ public class Lexic {
                             i=j;
                             if(palabraReservada(ora)){//comprobamos si es una palabra reservada
                                 System.out.println("Palabra_reservada="+ora);
-                                tokensCompletos+="Palabra_reservada("+ora+")|";
+                                tokensCompletos+="Palabra_reservada_"+ora+"("+ora+")|";
                             }
                             else{//caso contrario es un identificador o variable
                                 if(tipoDato(ora)){
@@ -87,8 +89,8 @@ public class Lexic {
                                 }
                                 else{
                                     if(evaluarOperador(t)!=' '){
-                                System.out.println("Operador-->"+evaluarOperador(t));
-                                tokensCompletos+="Operador("+evaluarOperador(t)+")|";
+                                System.out.println("Operador_"+tipoDeOperador(t)+"--> "+evaluarOperador(t));
+                                tokensCompletos+="Operador_"+tipoDeOperador(t)+"("+evaluarOperador(t)+")|";
                                     }
                                 }
                             }
@@ -97,7 +99,20 @@ public class Lexic {
                         }//end if si es diferente de letra y dígito
                     }
                 }//end while
-                System.out.println(tokensCompletos);
+             
+                File archivo = new File(ruta);
+                BufferedWriter bw;
+                if(archivo.exists()) {
+                     bw = new BufferedWriter(new FileWriter(archivo));
+                     bw.write(tokensCompletos);
+                } 
+                else {
+                     bw = new BufferedWriter(new FileWriter(archivo));
+                     bw.write(tokensCompletos);
+                 }
+                   System.out.println(tokensCompletos);
+                bw.close();
+                
             }catch(IOException e){}
         }catch(FileNotFoundException e){}
     }
@@ -150,6 +165,39 @@ public class Lexic {
         else if(c=='/')car='/';
         else if(c=='%')car='%';
         return car;
+    }
+    
+    public void analisis(String value){
+        System.out.println(value);
+    }
+    public static String tipoDeOperador(char c){
+        String valor="";
+        switch(c){
+            case '<':
+                valor="menor_que";
+                break;
+            case '>':
+                valor="mayor_que";
+                break;
+            case '=':
+                valor="asignacion";
+                break;
+            case '+':
+                valor="suma";
+                break;
+            case '/':
+                valor="division";
+                break;
+            case '-':
+                valor="resta";
+                break;
+            case '*':
+                valor="multiplicacion";
+                break;    
+                
+        }
+        return valor;
+    
     }
     public static char CaracterDeTermio(char c){
         char car=' ';

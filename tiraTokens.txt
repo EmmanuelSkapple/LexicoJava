@@ -1,0 +1,1 @@
+TipoDeDato(int)|Identificador(numero)|Operador_asignacion(=)|Numero(3)|CaracterDeTermino(;)|Palabra_reservada_while(while)|Separador(()|Identificador(numero)|Operador_menor_que(<)|Numero(4)|Separador())|Identificador(numero)|Operador_asignacion(=)|Numero(1)|CaracterDeTermino(;)|Operador_division(/)|Operador_division(/)|

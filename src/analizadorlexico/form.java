@@ -24,8 +24,11 @@ String filename;
     /**
      * Creates new form form
      */
+        Lexic l;
+
     public form() {
         initComponents();
+       Lexic l;
     }
 
     /**
@@ -127,7 +130,7 @@ String filename;
             jTextArea1.read(br,null);
             br.close();
             jTextArea1.requestFocus();
-        new Lexic(filename);
+        l=new Lexic(filename);
 
         }
         catch(Exception e){
@@ -142,8 +145,20 @@ String filename;
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        
-        
+        String valor="";
+        try{
+            FileReader reader = new FileReader("/home/adan/NetBeansProjects/LexicoJava/tiraTokens.txt");
+            BufferedReader br = new BufferedReader(reader);
+            while((valor = br.readLine())!=null) {
+             
+            }
+            br.close();
+       l.analisis(valor);
+       
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
