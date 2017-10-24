@@ -134,7 +134,7 @@ String filename;
 
         }
         catch(Exception e){
-            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed

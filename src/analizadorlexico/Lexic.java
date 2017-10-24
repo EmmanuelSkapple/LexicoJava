@@ -15,12 +15,11 @@ import java.util.*;
  *
  * @author emmanuelgarcia
  */
-public class Lexic {
+public final class Lexic {
     String tokensCompletos="";
-
  public Lexic(String f){
         String bufferIn;
-        String ruta="/home/adan/NetBeansProjects/LexicoJava/tiraTokens.txt";
+        String ruta="/Users/emmanuelgarcia/Desktop/tiraTokens.txt";
         
         try{
                          System.out.println(f);
@@ -30,6 +29,7 @@ public class Lexic {
 
                 while((bufferIn=in.readLine())!=null){//mientras no lleguemos al fin del archivo...
                     int i=0;
+                    System.out.println(bufferIn);
                     String cad=bufferIn.trim();
                     //eliminamos los espacios en blanco al inicio o al final (pero no a la mitad)
                     while(i<cad.length()){//recorremos la línea
@@ -38,15 +38,17 @@ public class Lexic {
                             String ora="";
                             ora+=t;
                             int j=i+1;
-                            while(Character.isDigit(cad.charAt(j))){
-                            //mientras el siguiente elemento sea un numero
-                                ora+=cad.charAt(j);//concatenamos
-                                j++;
-                                if(j==cad.length())break;//rompemos si llegamos al final de la línea
-                            }
+                            if(cad.charAt(j)!='\0'){
+                                while(Character.isDigit(cad.charAt(j))){
+                                    //mientras el siguiente elemento sea un numero
+                                    ora+=cad.charAt(j);//concatenamos
+                                    j++;
+                                    if(j==cad.length())break;//rompemos si llegamos al final de la línea
+                                }
+                            } 
                             i=j;//movemos a nuestra variable i en la cadena
                             System.out.println("Número-->"+ora);
-                            tokensCompletos+="Numero("+ora+")|";
+                            tokensCompletos+="Numero~"+ora+"#|";
                             continue;//pasamos al siguiente elemento
                         }//end if si es Dígito
                         else if(Character.isLetter(t)){//comprobamos si es una letra
@@ -63,16 +65,16 @@ public class Lexic {
                             i=j;
                             if(palabraReservada(ora)){//comprobamos si es una palabra reservada
                                 System.out.println("Palabra_reservada="+ora);
-                                tokensCompletos+="Palabra_reservada_"+ora+"("+ora+")|";
+                                tokensCompletos+="Palabra_reservada_"+ora+"~"+ora+"#|";
                             }
                             else{//caso contrario es un identificador o variable
                                 if(tipoDato(ora)){
                                 System.out.println("TipoDeDato-->"+ora);
-                                tokensCompletos+="TipoDeDato("+ora+")|";
+                                tokensCompletos+="TipoDeDato~"+ora+"#|";
                                 }
                                 else{
                                 System.out.println("Identificador-->"+ora);
-                                tokensCompletos+="Identificador("+ora+")|";
+                                tokensCompletos+="Identificador~"+ora+"#|";
                                 }
                             }
                             continue;
@@ -80,17 +82,23 @@ public class Lexic {
                         else if(!Character.isLetterOrDigit(t)){
                         //si no es letra ni dígito entonces...
                             if(evaluarCaracter(t)){//¿es separador?
-                                System.out.println("Separador-->"+evaluarSeparador(t));
-                                tokensCompletos+="Separador("+evaluarSeparador(t)+")|";
+                                if(t=='('||t==')'||t=='['||t==']'||t=='{'||t=='}'){
+                                System.out.println("SeparadorPar-->"+evaluarSeparador(t));
+                                tokensCompletos+="SeparadorPar~"+evaluarSeparador(t)+"#|";
+                                }
+                                else{
+                                     System.out.println("Separador-->"+evaluarSeparador(t));
+                                tokensCompletos+="Separador~"+evaluarSeparador(t)+"#|";
+                                }
                             }else{//¿o es un operador?
                                 if(CaracterDeTermio(t)==';'){
                                 System.out.println("CaracterDeTermino-->"+t);
-                                tokensCompletos+="CaracterDeTermino("+t+")|";
+                                tokensCompletos+="CaracterDeTermino~"+t+"#|";
                                 }
                                 else{
                                     if(evaluarOperador(t)!=' '){
                                 System.out.println("Operador_"+tipoDeOperador(t)+"--> "+evaluarOperador(t));
-                                tokensCompletos+="Operador_"+tipoDeOperador(t)+"("+evaluarOperador(t)+")|";
+                                tokensCompletos+="Operador_"+tipoDeOperador(t)+"~"+evaluarOperador(t)+"#|";
                                     }
                                 }
                             }
@@ -98,24 +106,130 @@ public class Lexic {
                             continue;
                         }//end if si es diferente de letra y dígito
                     }
+                     tokensCompletos+="$";
                 }//end while
-             
+
                 File archivo = new File(ruta);
                 BufferedWriter bw;
                 if(archivo.exists()) {
                      bw = new BufferedWriter(new FileWriter(archivo));
                      bw.write(tokensCompletos);
+
                 } 
                 else {
                      bw = new BufferedWriter(new FileWriter(archivo));
                      bw.write(tokensCompletos);
+
+
                  }
                    System.out.println(tokensCompletos);
                 bw.close();
-                
+                Sintactico(); 
             }catch(IOException e){}
         }catch(FileNotFoundException e){}
     }
+ 
+     public void Sintactico() throws FileNotFoundException, IOException{
+         int SeparadoresPend = 0;
+         String bufferIn;
+         ArrayList<String> palabras = new ArrayList<String>();
+         String Palabra2;
+         int Linea=0;
+         int al=0;
+         String Pendiente;
+         String f="/Users/emmanuelgarcia/Desktop/tiraTokens.txt";
+         DataInputStream in=new DataInputStream(new FileInputStream(f));
+         
+         try{
+            while((bufferIn=in.readLine())!=null){
+                String cad=bufferIn.trim();
+
+                int cont=0;
+                for (int i = 0; i < cad.length(); i++) { //recorre el string
+                    if(cad.charAt(i) == '~'){ //retorna el index del donde esta el (
+                        if(al==1){
+                       palabras.add(" ");
+                       al--;
+                        }
+                       palabras.add(bufferIn.substring(cont,i)); //toma todo lo que esta antes de ( hasta el |
+                    }
+                    if (cad.charAt(i)=='|'&& cad.charAt(i+1)=='$'){
+                           cont=i+2;
+                           al++;
+                       }
+                    else if(cad.charAt(i)=='|'){
+                           cont=i+1;
+                       }
+                    
+                }
+               
+             }
+             for (int j = 0; j < palabras.size(); j++) {
+                 if(palabras.get(j+1)==" "&&palabras.get(j+3)!=null){
+                     Linea++;
+                     j=j+2;
+                 }
+                 switch(palabras.get(j)){
+                     case "TipoDeDato":
+                         if("Identificador".equals(palabras.get(j+1))){
+                             System.out.println("bien");
+                         }
+                         else{
+                             System.out.println("tienes un error en la linea"+Linea+1 );
+                         }
+                         break;                    
+                     case "Identificado":
+                         if("Operador_asignacion".equals(palabras.get(j+1))&&"Operador_asignacion".equals(palabras.get(j+2))||"Operador_menor_que".equals(palabras.get(j+1))&&"Operador_asignacion".equals(palabras.get(j+2))||"Operador_asignacion".equals(palabras.get(j+1))&&"Operador_asignacion".equals(palabras.get(j+2))||"Operador_menor_que".equals(palabras.get(j+1))||"Operador_mayor_que".equals(palabras.get(j+1))){
+                             System.out.println("bien");
+                         }
+                         else{
+                             System.out.println("tienes un error en la linea"+Linea+1 );
+                         }
+                         break;
+                         
+                     case "Operador_asignacion":
+                         if("Numero".equals(palabras.get(j+1))){
+                             System.out.println("bien");
+                         }
+                         else{
+                             System.out.println("tienes un error en la linea"+Linea+1 );
+                         }
+                         break;
+                     case "SeparadorPar"  :
+                         if(SeparadoresPend<0){
+                         SeparadoresPend--;
+                         }
+                         else{
+                         SeparadoresPend++; 
+                         }
+                         break;
+                     case "Numero":
+                           if("CaracterDeTermino".equals(palabras.get(j+1))||"SeparadorPar".equals(palabras.get(j+1))){
+                             System.out.println("bien");
+                         }
+                         else{
+                             System.out.println("tienes un error en la linea"+Linea+1 );
+                         }
+                         break;
+                     case "Palabra_reservada_if":
+                               if("SeparadorPar".equals(palabras.get(j+1))&&"Identificador".equals(palabras.get(j+2))&&"Operador_asignacion".equals(palabras.get(j+3))&&"Operador_asignacion".equals(palabras.get(j+4))||"Operador_menor_que".equals(palabras.get(j+3))&&"Operador_asignacion".equals(palabras.get(j+4))||"Operador_asignacion".equals(palabras.get(j+3))&&"Operador_asignacion".equals(palabras.get(j+4))||"Operador_menor_que".equals(palabras.get(j+3))||"Operador_mayor_que".equals(palabras.get(j+3))&&"Numero".equals(palabras.get(j+4))||"Numero".equals(palabras.get(j+5))){
+                             System.out.println("bien");
+                         }
+                         else{
+                             System.out.println("tienes un error en la linea"+Linea+1 );
+                         }
+                         break;
+                 }
+              
+             }
+             if(SeparadoresPend!=0){
+                System.out.println("tienes un error cierra todos los (,{ o {");
+             }
+         }catch(FileNotFoundException e){
+            System.out.println(e);
+         }
+//leemos nuestro archivo de entrada
+     }   
  
     /**
     Método que evalua nuestro caracter si existe y nos retorna
